@@ -285,3 +285,101 @@ useImperativeHandle(ref, () => { … })
 useLayoutEffect	//identical to useEffect, but it fires synchronously after all DOM mutations
 useDebugValue(value)	//display a label for custom hooks in React DevTools
 ```
+
+# DOM nodes
+## References
+- Allows access to DOM nodes.
+```jsx
+class MyComponent extends Component {
+  render () {
+    return <div>
+      <input ref={el => this.input = el} />
+    </div>
+  }
+
+  componentDidMount () {
+    this.input.focus()
+  }
+}
+```
+
+## DOM Events
+- Pass functions to attributes like onChange.
+```jsx
+class MyComponent extends Component {
+  render () {
+    <input type="text"
+        value={this.state.value}
+        onChange={event => this.onChange(event)} />
+  }
+
+  onChange (event) {
+    this.setState({ value: event.target.value })
+  }
+}
+```
+
+# Other features
+## Transferring props
+- Propagates src="..." down to the sub-component.
+```jsx
+<VideoPlayer src="video.mp4" />
+
+class VideoPlayer extends Component {
+  render () {
+    return <VideoEmbed {...this.props} />
+  }
+}
+```
+## Top-level API
+- There are more, but these are most common.
+```jsx
+React.createClass({ ... })
+React.isValidElement(c)
+ReactDOM.render(<Component />, domnode, [callback])
+ReactDOM.unmountComponentAtNode(domnode)
+ReactDOMServer.renderToString(<Component />)
+ReactDOMServer.renderToStaticMarkup(<Component />)
+```
+
+# JSX patterns
+## Style shorthand
+```jsx
+const style = { height: 10 }
+return <div style={style}></div>
+return <div style={{ margin: 0, padding: 0 }}></div>
+```
+## Inner HTML
+```jsx
+function markdownify() { return "<p>...</p>"; }
+<div dangerouslySetInnerHTML={{__html: markdownify()}} />
+```
+## Conditionals
+```jsx
+<Fragment>
+  {showMyComponent
+    ? <MyComponent />
+    : <OtherComponent />}
+</Fragment>
+```
+## Lists
+- Always supply a key property.
+```jsx
+class TodoList extends Component {
+  render () {
+    const { items } = this.props
+
+    return <ul>
+      {items.map(item =>
+        <TodoItem item={item} key={item.key} />)}
+    </ul>
+  }
+}
+```
+## Short-circuit evaluation
+```jsx
+<Fragment>
+  {showPopup && <Popup />}
+  ...
+</Fragment>
+```
