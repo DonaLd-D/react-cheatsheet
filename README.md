@@ -383,3 +383,170 @@ class TodoList extends Component {
   ...
 </Fragment>
 ```
+
+# New features
+
+## Returning multiple elements
+- You can return multiple elements as arrays or fragments.
+```jsx
+render () {
+  // Don't forget the keys!
+  return [
+    <li key="A">First item</li>,
+    <li key="B">Second item</li>
+  ]
+}
+```
+```jsx
+render () {
+  // Fragments don't require keys!
+  return (
+    <Fragment>
+      <li>First item</li>
+      <li>Second item</li>
+    </Fragment>
+  )
+}
+```
+## Returning strings
+```jsx
+render() {
+  return 'Look ma, no spans!';
+}
+```
+## Portals
+- This renders this.props.children into any location in the DOM.
+```jsx
+render () {
+  return React.createPortal(
+    this.props.children,
+    document.getElementById('menu')
+  )
+}
+```
+## Errors
+- Catch errors via componentDidCatch. (React 16+)
+```jsx
+class MyComponent extends Component {
+  ···
+  componentDidCatch (error, info) {
+    this.setState({ error })
+  }
+}
+```
+## Hydration
+- Use ReactDOM.hydrate instead of using ReactDOM.render if you’re rendering over the output of ReactDOMServer.
+```jsx
+const el = document.getElementById('app')
+ReactDOM.hydrate(<App />, el)
+```
+
+# Property validation
+## PropTypes
+```jsx
+import PropTypes from 'prop-types'
+```
+
+```
+any	//Anything
+```
+- Basic
+```
+string	 
+number	 
+func	//Function
+bool	//True or false
+```
+- Enum
+```
+oneOf(any)	//Enum types
+oneOfType(type array)	//Union
+```
+- Array
+```
+array	 
+arrayOf(…)
+```	 
+- Object
+```
+object	 
+objectOf(…)	//Object with values of a certain type
+instanceOf(…)	//Instance of a class
+shape(…)
+```	 
+- Elements
+```
+element	//React element
+node	//DOM node
+```
+- Required
+```
+(···).isRequired	Required
+```
+
+## Basic types
+```jsx
+MyComponent.propTypes = {
+  email:      PropTypes.string,
+  seats:      PropTypes.number,
+  callback:   PropTypes.func,
+  isClosed:   PropTypes.bool,
+  any:        PropTypes.any
+}
+```
+
+## Enumerables (oneOf)
+```jsx
+MyCo.propTypes = {
+  direction: PropTypes.oneOf([
+    'left', 'right'
+  ])
+}
+```
+
+## Custom validation
+```jsx
+MyCo.propTypes = {
+  customProp: (props, key, componentName) => {
+    if (!/matchme/.test(props[key])) {
+      return new Error('Validation failed!')
+    }
+  }
+}
+```
+
+## Required types
+```jsx
+MyCo.propTypes = {
+  name:  PropTypes.string.isRequired
+}
+```
+
+## Elements
+```jsx
+MyCo.propTypes = {
+  // React element
+  element: PropTypes.element,
+
+  // num, string, element, or an array of those
+  node: PropTypes.node
+}
+```
+
+## Arrays and objects
+- Use .array[Of], .object[Of], .instanceOf, .shape.
+```jsx
+MyCo.propTypes = {
+  list: PropTypes.array,
+  ages: PropTypes.arrayOf(PropTypes.number),
+  user: PropTypes.object,
+  user: PropTypes.objectOf(PropTypes.number),
+  message: PropTypes.instanceOf(Message)
+}
+MyCo.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    age:  PropTypes.number
+  })
+}
+```
